@@ -1,0 +1,148 @@
+﻿@{
+    ViewBag.Title = "Importación";
+}
+
+@model System.Data.DataTable
+@using System.Data;
+@Styles.Render("~/Content/index")
+
+
+<form method="post" action="@Url.Action("Index", "Home")" enctype="multipart/form-data">
+    <div class="file-box">
+        <a class="input-group-addon" href='@Url.Action("DescargarArchivo", "Home")'>
+            DESCARGAR ARCHIVO PARA LA DEMO
+        </a>
+    </div>
+    
+    <div class="panel panel-default" id="panel-data">
+        <div class="panel-heading"><h4>IMPORTACIÓN DE ARCHIVO EXCEL</h4></div><br />
+        <div class="panel-body">
+            <div class="input-group">
+                <label id="btnFile" class="form-control btn btn-primary" for="dataFile">
+                    <input type="file" id="dataFile" name="uploadFile" onchange="$('#infoFile').text(this.files[0].name)">Examinar
+                </label>
+                <span class="input-group-addon" id="infoFile"></span>
+                <input type="submit" value="Cargar información" class="form-control btn btn-success" />
+            </div>
+            <br />
+            @if (ViewBag.Alert != null)
+            {
+                <div class="alert alert-dismissable alert-danger">
+                    <button type="button" class="close" data-dismiss="alert">
+                        &times;
+                    </button>
+                    <strong>Aviso!</strong> @ViewBag.Alert
+                </div>
+            }
+        </div>
+    </div>
+    @if (Model != null)
+    {
+        <table id="table1" class="table table-striped table-bordered">
+            <caption>INFORMACIÓN DEL ARCHIVO</caption>
+            <thead>
+                <tr>
+                    @foreach (DataColumn col in Model.Columns)
+                    {
+                        <th class="text-center">@col.ColumnName</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (DataRow row in Model.Rows)
+                {
+                    <tr>
+                        @foreach (DataColumn col in Model.Columns)
+                        {
+                            <td class="text-center">@row[col.ColumnName]</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</form>
+<br />
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>APLICACIÓN DE FILTROS</h4></div>
+            <div id="formFiltro" class="panel-body">
+                <div class="form-group">
+                    <input type="radio" name="option" value="A">
+                    Usuarios con la provincia donde fue emitida su cédula
+                </div>
+                <div class="form-group">
+                    <input type="radio" name="option" value="B">
+                    Usuarios con dominio del correo yahoo y gmail
+                </div>
+                <div class="form-group">
+                    <input type="radio" name="option" value="C">
+                    Cantidad de usuarios mayores y menores de edad
+                </div>
+                <div class="form-group">
+                    <input type="radio" name="option" value="D">
+                    Usuarios de sexo femenino en orden ascendente
+                </div>
+                <div class="form-group" style="text-align:right">
+                    <button class="btn btn-primary" type="button" id="btnLimpiar">Limpiar filtro</button>&emsp;
+                    <button class="btn btn-success" type="button" id="btnFiltro">Mostrar información</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" id="divFiltro"></div>
+</div>
+
+
+
+<script>
+
+        $(document).ready(function () {
+            AplicarFiltro();
+            OcultarAlerta();
+            CargarTabla();
+            LimpiarFiltro();
+        });
+
+        function AplicarFiltro() {
+            $("#btnFiltro").click(function () {
+                var optionSelected = $('input[name=option]:checked', '#formFiltro').val();
+                if ( '@(TempData["fileData"])' === "0") {
+                    alert("Debe cargar el archivo primero");
+                }else if (optionSelected === undefined) {
+                    alert("Debe marcar una opción de filtro");
+                }else {
+                    $.ajaxPrefilter(function (options) { options.async = true; });
+                    $.ajax({
+                        type: 'POST',
+                        data: 'option=' + optionSelected,
+                        url: '@Url.Action("Filtro", "Home")',
+                        success: function (data) {
+                            $("#divFiltro").html(data);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                }
+            });
+        }
+        function OcultarAlerta() {
+            window.setTimeout(function () {
+                $(".alert").fadeTo(1500, 0).slideUp(500, function () {
+                    $(this).remove();
+                });
+            }, 2500);
+        }
+        function CargarTabla() {
+            $("table1").DataTable();
+        };
+        function LimpiarFiltro() {
+            $("#btnLimpiar").click(function () {
+                $('input[name="option"]').prop('checked', false);
+                $("#divFiltro").html("");
+            });
+        }
+</script>
+

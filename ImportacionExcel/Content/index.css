@@ -1,0 +1,22 @@
+﻿#btnFile {
+    background-color: #0275d8;
+    color: white;
+}
+#dataFile{
+    display:none;
+}
+#infoFile{
+    width:300px;
+    background-color:white;
+    text-align:left;
+}
+.alert {
+    width: 400px;
+}
+#panel-data{
+    width:550px;
+}
+.file-box{
+    margin-bottom:30px;
+    margin-top:30px;
+}

@@ -1,0 +1,21 @@
+﻿@using ImportacionExcel.Models;
+@model  List<FiltroC>
+
+<table class="table table-striped table-bordered">
+    <caption>INFORMACIÓN FILTRADA</caption>
+    <thead>
+        <tr>
+            <th class="text-center">Descripción</th>
+            <th class="text-center">Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (FiltroC c in Model)
+        {
+            <tr>
+                <td class="text-center">@c.Descripcion</td>
+                <td class="text-center">@c.Cantidad</td>
+            </tr>
+        }
+    </tbody>
+</table>
