@@ -1,5 +1,5 @@
 
-# Proyecto de importación de archivo excel y aplicación de filtros
+# Importación de archivo excel y aplicación de filtros
 Proyecto personal realizado en Asp.Net MVC. Es un sistema básico que realiza la importación de un archivo excel y en base a la información cargada del archivo se aplican algunos filtros.
 
 ## Demostración
